@@ -273,7 +273,7 @@ function monday(d){const x=new Date(d); x.setHours(0,0,0,0); const k=(x.getDay()
 function ymd(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function parseYmd(s){const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d)}
 if(!state.settings.cycleStart){state.settings.cycleStart=ymd(monday(new Date())); persist();}
-const PROGRAM_START="2026-10-19"; // début du programme : semaine 1 du cycle
+const PROGRAM_START="2026-11-09"; // début du programme : semaine 1 du cycle
 function addDays(d,n){const x=new Date(d); x.setDate(x.getDate()+n); return x}
 function sessionsInWeek(m){const end=addDays(m,7); return state.sessions.filter(s=>{const d=new Date(s.date); return d>=m&&d<end});}
 // Type d'une semaine : choix manuel, sinon déduit des séances faites (Pecs · Dos ou Épaules · Bras 2 = 5, Upper = 4)
