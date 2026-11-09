@@ -269,11 +269,12 @@ draft=lsGet(DRAFT_KEY);
 function persist(){lsSet(LS_KEY,state)}
 
 /* ---------- Dates ---------- */
-function monday(d){const x=new Date(d); x.setHours(0,0,0,0); const k=(x.getDay()+6)%7; x.setDate(x.getDate()-k); return x}
 function ymd(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function parseYmd(s){const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d)}
+const PROGRAM_START="2026-11-10"; // début du programme : semaine 1 du cycle 1 (mardi 10 novembre 2026)
+// Les semaines du programme durent 7 jours à partir de PROGRAM_START (mardi → lundi), pas du lundi calendaire
+function monday(d){const x=new Date(d); x.setHours(0,0,0,0); const s=parseYmd(PROGRAM_START); if(x<s) return s; const k=Math.floor(Math.round((x-s)/864e5)/7); const r=new Date(s); r.setDate(r.getDate()+7*k); return r}
 if(!state.settings.cycleStart){state.settings.cycleStart=ymd(monday(new Date())); persist();}
-const PROGRAM_START="2026-11-09"; // début du programme : semaine 1 du cycle
 function addDays(d,n){const x=new Date(d); x.setDate(x.getDate()+n); return x}
 function sessionsInWeek(m){const end=addDays(m,7); return state.sessions.filter(s=>{const d=new Date(s.date); return d>=m&&d<end});}
 // Type d'une semaine : choix manuel, sinon déduit des séances faites (Pecs · Dos ou Épaules · Bras 2 = 5, Upper = 4)
@@ -408,6 +409,7 @@ function weekHTML(){
     <p class="hint">${note}</p></section>
     ${nextBlock}
     <section><div class="label" style="margin-bottom:4px">Programme de la semaine</div><div class="slist">${rows}</div></section>
+    <p class="hint">Semaine ${w.idx+1} du cycle ${w.cycleNo} : du ${w.m.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})} au ${addDays(w.m,6).toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})}. Chaque semaine démarre un mardi.</p>
     <div><button class="ghost" type="button" data-resetcycle>Repartir en semaine 1 cette semaine</button></div>`;
 }
 function spark(vals){
